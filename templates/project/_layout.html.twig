@@ -1,0 +1,42 @@
+{# templates/project/_layout.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ project.name }} · Sentinel{% endblock %}
+
+{% block breadcrumb %}
+    {% include '_partials/_breadcrumb.html.twig' with {
+        items: [
+            { label: project.name, url: path('app_project_show', {id: project.id}) }
+        ] | merge(breadcrumb_items ?? [])
+    } only %}
+{% endblock %}
+
+{% block body %}
+    <div class="row g-3">
+        <aside class="col-12 col-lg-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="fw-semibold mb-2">{{ project.name }}</div>
+                    <div class="text-secondary small text-break">{{ project.path }}</div>
+                </div>
+
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action"
+                       href="{{ path('app_project_show', {id: project.id}) }}">
+                        Project home
+                    </a>
+                    <a class="list-group-item list-group-item-action disabled" href="#" aria-disabled="true">
+                        Configuration
+                    </a>
+                    <a class="list-group-item list-group-item-action disabled" href="#" aria-disabled="true">
+                        Features
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <section class="col-12 col-lg-9">
+            {% block project_content %}{% endblock %}
+        </section>
+    </div>
+{% endblock %}

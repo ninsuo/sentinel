@@ -1,0 +1,26 @@
+{# templates/_partials/_breadcrumb.html.twig #}
+{% set items = items ?? [] %}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+            <a href="{{ path('app_home') }}">Home</a>
+        </li>
+
+        {% for item in items %}
+            {% if loop.last %}
+                <li class="breadcrumb-item active" aria-current="page">
+                    {{ item.label }}
+                </li>
+            {% else %}
+                <li class="breadcrumb-item">
+                    {% if item.url is defined and item.url %}
+                        <a href="{{ item.url }}">{{ item.label }}</a>
+                    {% else %}
+                        {{ item.label }}
+                    {% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</nav>

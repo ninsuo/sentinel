@@ -1,0 +1,41 @@
+{# templates/home/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Sentinel{% endblock %}
+
+{% block body %}
+    <div class="p-4 p-lg-5 mb-4 bg-white border rounded-3 shadow-sm">
+        <div class="container-fluid py-2">
+            <h1 class="display-6 fw-semibold mb-2">Create a Project</h1>
+            <p class="text-secondary mb-4">
+                Local, reviewable, diff-based AI assistance for people who still like being in control.
+            </p>
+
+            <a class="btn btn-primary disabled" href="#" aria-disabled="true">New project</a>
+            <a class="btn btn-outline-secondary disabled" href="#" aria-disabled="true">Global config</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white fw-semibold">Projects</div>
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Path</th>
+                    <th>Last updated</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="4" class="text-secondary text-center py-5">
+                        No projects yet. Shockingly, you have to create one.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
