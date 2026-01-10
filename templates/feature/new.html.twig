@@ -1,0 +1,22 @@
+{% extends 'project/_layout.html.twig' %}
+
+{% set breadcrumb_items = [
+    { label: 'New feature' }
+] %}
+
+{% block project_content %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-white fw-semibold">New feature</div>
+        <div class="card-body">
+            {{ form_start(form) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.prompt) }}
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary">Create</button>
+                <a class="btn btn-outline-secondary" href="{{ path('app_project_show', {id: project.id}) }}">Cancel</a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

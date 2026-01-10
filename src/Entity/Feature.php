@@ -2,33 +2,32 @@
 
 namespace App\Entity;
 
-use App\Repository\ProjectRepository;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\FeatureRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ProjectRepository::class)]
-#[ORM\Table(name: 'project')]
-#[ORM\Index(name: 'idx_project_deleted_at', columns: ['deleted_at'])]
-#[ORM\UniqueConstraint(name: 'uniq_project_name', columns: ['name'])]
+#[ORM\Entity(repositoryClass: FeatureRepository::class)]
+#[ORM\Table(name: 'feature')]
+#[ORM\Index(name: 'idx_feature_deleted_at', columns: ['deleted_at'])]
+#[ORM\Index(name: 'idx_feature_project', columns: ['project_id'])]
 #[ORM\HasLifecycleCallbacks]
-class Project
+class Feature
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::STRING, length: 120)]
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'features')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private Project $project;
+
+    #[ORM\Column(type: Types::STRING, length: 160)]
     private string $name;
 
-    // Keep it long. People love deep folder structures.
+    // The goal / spec that stays with the feature across runs
     #[ORM\Column(type: Types::TEXT)]
-    private string $path;
-
-    // Project system prompt / instructions (project-scoped context rules)
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $prompt = null;
+    private string $prompt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
@@ -40,22 +39,21 @@ class Project
     private ?\DateTimeImmutable $deletedAt = null;
 
     /**
-     * @var Collection<int, Feature>
+     * @var list<FeatureRun>
      */
-    #[ORM\OneToMany(targetEntity: Feature::class, mappedBy: 'project', orphanRemoval: true)]
-    #[ORM\OrderBy(['updatedAt' => 'DESC'])]
-    private Collection $features;
+    #[ORM\OneToMany(mappedBy: 'feature', targetEntity: FeatureRun::class, orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
+    private iterable $runs;
 
-    public function __construct(string $name, string $path)
+    public function __construct(Project $project, string $name, string $prompt)
     {
+        $this->project = $project;
         $this->name = $name;
-        $this->path = $path;
+        $this->prompt = $prompt;
 
         $now = new \DateTimeImmutable();
         $this->createdAt = $now;
         $this->updatedAt = $now;
-
-        $this->features = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -92,6 +90,11 @@ class Project
         return $this->id;
     }
 
+    public function getProject() : Project
+    {
+        return $this->project;
+    }
+
     public function getName() : string
     {
         return $this->name;
@@ -104,24 +107,12 @@ class Project
         return $this;
     }
 
-    public function getPath() : string
-    {
-        return $this->path;
-    }
-
-    public function setPath(string $path) : self
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    public function getPrompt() : ?string
+    public function getPrompt() : string
     {
         return $this->prompt;
     }
 
-    public function setPrompt(?string $prompt) : self
+    public function setPrompt(string $prompt) : self
     {
         $this->prompt = $prompt;
 
@@ -141,13 +132,5 @@ class Project
     public function getDeletedAt() : ?\DateTimeImmutable
     {
         return $this->deletedAt;
-    }
-
-    /**
-     * @return Collection<int, Feature>
-     */
-    public function getFeatures() : Collection
-    {
-        return $this->features;
     }
 }

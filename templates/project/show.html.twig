@@ -8,14 +8,43 @@
         <div class="d-flex gap-2">
             <a class="btn btn-outline-secondary" href="{{ path('app_project_edit', {id: project.id}) }}">Edit
                 configuration</a>
-            <a class="btn btn-primary disabled" href="#" aria-disabled="true">Create feature</a>
+            <a class="btn btn-primary" href="{{ path('app_feature_new', {id: project.id}) }}">Create feature</a>
         </div>
     </div>
 
     <div class="card shadow-sm">
         <div class="card-header bg-white fw-semibold">Features</div>
-        <div class="card-body text-secondary">
-            Coming next: Feature entity + runs + diff preview/apply.
+
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Last run</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if features is empty %}
+                    <tr>
+                        <td colspan="4" class="text-secondary text-center py-5">No features yet.</td>
+                    </tr>
+                {% else %}
+                    {% for feature in features %}
+                        <tr>
+                            <td class="fw-semibold">{{ feature.name }}</td>
+                            <td class="text-secondary small">-</td>
+                            <td class="text-secondary small">-</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   href="{{ path('app_feature_show', {projectId: project.id, featureId: feature.id}) }}">Open</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}

@@ -5,6 +5,7 @@ namespace App\Controller\Project;
 use App\Entity\Project;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,8 +24,11 @@ final class ProjectTrashController extends AbstractController
     }
 
     #[Route('/project/{id<\d+>}/delete', name: 'app_project_delete', methods: ['POST'])]
-    public function softDelete(Project $project, Request $request, EntityManagerInterface $em) : Response
-    {
+    public function softDelete(
+        #[MapEntity] Project $project,
+        Request $request,
+        EntityManagerInterface $em
+    ) : Response {
         if (!$this->isCsrfTokenValid('delete_project_'.$project->getId(), (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
@@ -38,8 +42,11 @@ final class ProjectTrashController extends AbstractController
     }
 
     #[Route('/project/{id<\d+>}/restore', name: 'app_project_restore', methods: ['POST'])]
-    public function restore(Project $project, Request $request, EntityManagerInterface $em) : Response
-    {
+    public function restore(
+        #[MapEntity] Project $project,
+        Request $request,
+        EntityManagerInterface $em
+    ) : Response {
         if (!$this->isCsrfTokenValid('restore_project_'.$project->getId(), (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
@@ -53,8 +60,11 @@ final class ProjectTrashController extends AbstractController
     }
 
     #[Route('/project/{id<\d+>}/purge', name: 'app_project_purge', methods: ['POST'])]
-    public function purge(Project $project, Request $request, EntityManagerInterface $em) : Response
-    {
+    public function purge(
+        #[MapEntity] Project $project,
+        Request $request,
+        EntityManagerInterface $em
+    ) : Response {
         if (!$project->isDeleted()) {
             throw $this->createNotFoundException('Project must be deleted before purge.');
         }
