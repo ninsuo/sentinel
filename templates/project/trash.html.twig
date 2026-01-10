@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trash · Sentinel{% endblock %}
+
+{% block body %}
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h4 fw-semibold mb-0">Trash</h1>
+        <a class="btn btn-outline-secondary" href="{{ path('app_home') }}">Back</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white fw-semibold">Deleted projects</div>
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Path</th>
+                    <th>Deleted</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if projects is empty %}
+                    <tr>
+                        <td colspan="4" class="text-secondary text-center py-5">Trash is empty. Miracles happen.</td>
+                    </tr>
+                {% else %}
+                    {% for project in projects %}
+                        <tr>
+                            <td class="fw-semibold">{{ project.name }}</td>
+                            <td class="text-break text-secondary small">{{ project.path }}</td>
+                            <td class="text-secondary small">{{ project.deletedAt|date('Y-m-d H:i') }}</td>
+                            <td class="text-end">
+                                <form method="post" action="{{ path('app_project_restore', {id: project.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('restore_project_' ~ project.id) }}">
+                                    <button class="btn btn-sm btn-outline-primary">Restore</button>
+                                </form>
+
+                                <form method="post" action="{{ path('app_project_purge', {id: project.id}) }}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Permanently delete this project? This cannot be undone.');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('purge_project_' ~ project.id) }}">
+                                    <button class="btn btn-sm btn-outline-danger">Delete forever</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

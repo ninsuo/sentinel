@@ -2,16 +2,19 @@
 
 namespace App\Controller;
 
+use App\Repository\ProjectRepository;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends AbstractController
 {
-    #[Template(template: 'home/index.html.twig')]
     #[Route('/', name: 'app_home')]
-    public function __invoke() : array
+    #[Template('home/index.html.twig')]
+    public function __invoke(ProjectRepository $projects) : array
     {
-        return [];
+        return [
+            'projects' => $projects->findAllActive(),
+        ];
     }
 }

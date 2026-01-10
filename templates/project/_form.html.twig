@@ -1,0 +1,11 @@
+{{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.path) }}
+    {{ form_row(form.prompt) }}
+
+<div class="d-flex gap-2">
+    <button class="btn btn-primary">{{ submit_label|default('Save') }}</button>
+    <a class="btn btn-outline-secondary" href="{{ path('app_home') }}">Cancel</a>
+</div>
+
+{{ form_end(form) }}

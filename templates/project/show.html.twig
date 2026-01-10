@@ -1,0 +1,21 @@
+{% extends 'project/_layout.html.twig' %}
+
+{% block project_content %}
+    <div class="p-4 bg-white border rounded-3 shadow-sm mb-3">
+        <h1 class="h4 fw-semibold mb-2">{{ project.name }}</h1>
+        <div class="text-secondary small text-break mb-3">{{ project.path }}</div>
+
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" href="{{ path('app_project_edit', {id: project.id}) }}">Edit
+                configuration</a>
+            <a class="btn btn-primary disabled" href="#" aria-disabled="true">Create feature</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white fw-semibold">Features</div>
+        <div class="card-body text-secondary">
+            Coming next: Feature entity + runs + diff preview/apply.
+        </div>
+    </div>
+{% endblock %}

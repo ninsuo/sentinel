@@ -1,19 +1,16 @@
-{# templates/home/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Sentinel{% endblock %}
 
 {% block body %}
     <div class="p-4 p-lg-5 mb-4 bg-white border rounded-3 shadow-sm">
-        <div class="container-fluid py-2">
-            <h1 class="display-6 fw-semibold mb-2">Create a Project</h1>
-            <p class="text-secondary mb-4">
-                Local, reviewable, diff-based AI assistance for people who still like being in control.
-            </p>
+        <h1 class="display-6 fw-semibold mb-2">Create a Project</h1>
+        <p class="text-secondary mb-4">
+            Local, reviewable, diff-based AI assistance.
+        </p>
 
-            <a class="btn btn-primary disabled" href="#" aria-disabled="true">New project</a>
-            <a class="btn btn-outline-secondary disabled" href="#" aria-disabled="true">Global config</a>
-        </div>
+        <a class="btn btn-primary" href="{{ path('app_project_new') }}">New project</a>
+        <a class="btn btn-outline-secondary" href="{{ path('app_project_trash') }}">Trash</a>
     </div>
 
     <div class="card shadow-sm">
@@ -24,16 +21,39 @@
                 <tr>
                     <th>Name</th>
                     <th>Path</th>
-                    <th>Last updated</th>
+                    <th>Updated</th>
                     <th class="text-end">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td colspan="4" class="text-secondary text-center py-5">
-                        No projects yet. Shockingly, you have to create one.
-                    </td>
-                </tr>
+                {% if projects is empty %}
+                    <tr>
+                        <td colspan="4" class="text-secondary text-center py-5">
+                            No projects yet. Create one.
+                        </td>
+                    </tr>
+                {% else %}
+                    {% for project in projects %}
+                        <tr>
+                            <td class="fw-semibold">{{ project.name }}</td>
+                            <td class="text-break text-secondary small">{{ project.path }}</td>
+                            <td class="text-secondary small">{{ project.updatedAt|date('Y-m-d H:i') }}</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   href="{{ path('app_project_show', {id: project.id}) }}">Open</a>
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   href="{{ path('app_project_edit', {id: project.id}) }}">Edit</a>
+
+                                <form method="post" action="{{ path('app_project_delete', {id: project.id}) }}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Move this project to trash?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_project_' ~ project.id) }}">
+                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
                 </tbody>
             </table>
         </div>

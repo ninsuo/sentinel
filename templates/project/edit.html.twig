@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit {{ project.name }} · Sentinel{% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-white fw-semibold">Edit project</div>
+        <div class="card-body">
+            {% include 'project/_form.html.twig' with { form: form, submit_label: 'Save' } %}
+        </div>
+    </div>
+{% endblock %}
