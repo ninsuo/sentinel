@@ -12,7 +12,7 @@
                 <div class="text-secondary small">Feature prompt</div>
             </div>
 
-            <form method="post" action="{{ path('app_feature_run', {projectId: project.id, featureId: feature.id}) }}">
+            <form method="post" action="{{ path('app_feature_run_new', {projectId: project.id, featureId: feature.id}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('run_feature_' ~ feature.id) }}">
                 <button class="btn btn-primary">Run</button>
             </form>

@@ -1,18 +1,47 @@
 # yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
 parameters:
+    sentinel.fs.max_preview_bytes: 200000 # 200 KB preview
+    sentinel.fs.max_tree_entries: 4000    # per directory listing
+    sentinel.fs.max_search_results: 200
+    sentinel.fs.forbidden_path_patterns:
+        - '#(^|/)\.git(/|$)#'
+        - '#(^|/)\.idea(/|$)#'
+        - '#(^|/)\.vscode(/|$)#'
+        - '#(^|/)\.env(\.|$)#'
+        - '#(^|/)vendor(/|$)#'
+        - '#(^|/)node_modules(/|$)#'
+        - '#(^|/)var(/|$)#'
+        - '#(^|/)cache(/|$)#'
+        - '#(^|/)storage(/|$)#'
+        - '#(^|/)secrets?(/|$)#'
+        - '#(^|/)(id_rsa|id_ed25519)(\.pub)?$#'
+        - '#\.(pem|key|p12|pfx|crt|cer)$#i'
+        - '#\.(sqlite|db)$#i'
+        - '#(^|/)docker-compose\.ya?ml$#i'
+        - '#(^|/)\.htpasswd$#i'
+        - '#(^|/)composer\.lock$#i' # optional: you may want it allowed. remove if needed.
 
 services:
-  # default configuration for services in *this* file
-  _defaults:
-    autowire: true      # Automatically injects dependencies in your services.
-    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-  # makes classes in src/ available to be used as services
-  # this creates a service per class whose id is the fully-qualified class name
-  App\:
-    resource: '../src/'
-    exclude:
-      - '../src/DependencyInjection/'
-      - '../src/Entity/'
-      - '../src/Kernel.php'
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
 
+    App\Filesystem\SentinelFilesystemConfig:
+        arguments:
+            $maxPreviewBytes: '%sentinel.fs.max_preview_bytes%'
+            $maxTreeEntries: '%sentinel.fs.max_tree_entries%'
+            $maxSearchResults: '%sentinel.fs.max_search_results%'
+            $forbiddenPathPatterns: '%sentinel.fs.forbidden_path_patterns%'
+
+    App\Filesystem\SentinelFilesystem: ~

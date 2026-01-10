@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Feature;
+namespace App\Controller\FeatureRun;
 
 use App\Entity\Feature;
 use App\Entity\FeatureRun;
@@ -12,14 +12,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class FeatureRunController extends AbstractController
+final class FeatureRunCreateController extends AbstractController
 {
-    #[Route('/project/{projectId<\d+>}/feature/{featureId<\d+>}/run', name: 'app_feature_run', methods: ['POST'])]
+    #[Route('/project/{projectId<\d+>}/feature/{featureId<\d+>}/run/new', name: 'app_feature_run_new', methods: ['POST'])]
     public function __invoke(
         #[MapEntity(expr: 'repository.find(projectId)')] Project $project,
         #[MapEntity(expr: 'repository.find(featureId)')] Feature $feature,
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ) : Response {
         if ($feature->getProject()->getId() !== $project->getId()) {
             throw $this->createNotFoundException('Feature does not belong to project.');
@@ -29,19 +29,16 @@ final class FeatureRunController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
-        // For now: just create a run record. Next step: file picker + AI call + patch.
         $run = new FeatureRun($feature, $feature->getPrompt());
+        $run->setStatus('created');
 
         $em->persist($run);
         $em->flush();
 
-        $this->addFlash('success', 'Feature run created (AI step coming next).');
-
-        return $this->redirectToRoute('app_feature_show', [
+        return $this->redirectToRoute('app_feature_run_select_files', [
             'projectId' => $project->getId(),
             'featureId' => $feature->getId(),
-            'active_menu' => 'feature',
-            'active_feature_id' => $feature->getId(),
+            'runId' => $run->getId(),
         ]);
     }
 }

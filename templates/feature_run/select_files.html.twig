@@ -1,0 +1,88 @@
+{% extends 'project/_layout.html.twig' %}
+
+{% set breadcrumb_items = [
+    { label: 'Feature: ' ~ feature.name, url: path('app_feature_show', {projectId: project.id, featureId: feature.id}) },
+    { label: 'Run #' ~ run.id ~ ' · Select files' }
+] %}
+
+{% block project_content %}
+    <div class="bg-white border rounded-3 shadow-sm p-3 mb-3">
+        <div class="d-flex justify-content-between align-items-start gap-3">
+            <div>
+                <div class="text-secondary small">Feature</div>
+                <div class="h5 mb-1">{{ feature.name }}</div>
+                <div class="text-secondary small">Run #{{ run.id }}</div>
+            </div>
+
+            <div class="text-end">
+                <a class="btn btn-outline-secondary"
+                   href="{{ path('app_feature_show', {projectId: project.id, featureId: feature.id}) }}">Back</a>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row g-3">
+            <div class="col-12 col-lg-4">
+                <label class="form-label">Directory</label>
+                <div class="input-group mb-2">
+                    <input id="fs-dir" class="form-control" value="src"/>
+                    <button id="fs-load" class="btn btn-outline-primary" type="button">Load</button>
+                </div>
+
+                <div class="input-group mb-2">
+                    <input id="fs-search" class="form-control" placeholder="Search (filename contains)"/>
+                    <button id="fs-search-btn" class="btn btn-outline-secondary" type="button">Search</button>
+                </div>
+
+                <div class="border rounded p-2 bg-body-tertiary" style="height: 380px; overflow:auto;">
+                    <div id="fs-list" class="list-group list-group-flush"></div>
+                </div>
+
+                <div class="small text-secondary mt-2">
+                    Tip: click folders to drill down, click files to preview, double-click files to select.
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <label class="form-label">Preview</label>
+                <div class="border rounded bg-body-tertiary p-2" style="height: 460px; overflow:auto;">
+                    <pre id="fs-preview" class="mb-0 small" style="white-space: pre-wrap;"></pre>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-3">
+                <label class="form-label">Selected files</label>
+
+                <form id="select-files-form"
+                      method="post"
+                      action="{{ path('app_feature_run_select_files_save', {projectId: project.id, featureId: feature.id, runId: run.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('select_files_' ~ run.id) }}">
+                    <input type="hidden" name="selected_files_json" id="selected-files-json" value="[]">
+
+                    <div class="border rounded p-2 bg-white" style="height: 380px; overflow:auto;">
+                        <div id="selected-files" class="list-group list-group-flush"></div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-2">
+                        <button class="btn btn-primary" type="submit">Save selection</button>
+                        <button class="btn btn-outline-danger" type="button" id="clear-selection">Clear</button>
+                    </div>
+                </form>
+
+                <div class="small text-secondary mt-2">
+                    Server will re-validate everything. Your browser doesn’t get to be in charge.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.SENTINEL_FS = {
+            listUrl: {{ path('app_project_fs_list', {id: project.id})|json_encode|raw }},
+            searchUrl: {{ path('app_project_fs_search', {id: project.id})|json_encode|raw }},
+            previewUrl: {{ path('app_project_fs_preview', {id: project.id})|json_encode|raw }},
+        };
+    </script>
+    <script type="module" src="{{ asset('app_fs_picker.js') }}"></script>
+{% endblock %}

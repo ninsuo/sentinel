@@ -1,8 +1,6 @@
 {# templates/project/_layout.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% set active_menu = active_menu ?? '' %}
-
 {% block title %}{{ project.name }} · Sentinel{% endblock %}
 
 {% block breadcrumb %}
@@ -22,6 +20,15 @@
                     <div class="text-secondary small text-break">{{ project.path }}</div>
                 </div>
 
+                {#
+                expected vars:
+                - project (Project)
+                - active_menu (string)
+                - active_feature_id (int|null) optional, for highlight
+                #}
+                {% set active_menu = active_menu ?? '' %}
+                {% set active_feature_id = active_feature_id ?? null %}
+
                 <div class="list-group list-group-flush">
 
                     <a class="list-group-item list-group-item-action {{ active_menu == 'project_home' ? 'active' : '' }}"
@@ -34,21 +41,37 @@
                         Configuration
                     </a>
 
-                    <div class="list-group-item text-uppercase small text-secondary fw-semibold">
-                        Features
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-uppercase small text-secondary fw-semibold mb-0">Features</span>
+                        <a class="btn btn-sm btn-outline-primary"
+                           href="{{ path('app_feature_new', {id: project.id}) }}">
+                            +
+                        </a>
                     </div>
 
-                    <a class="list-group-item list-group-item-action {{ active_menu == 'feature_new' ? 'active' : '' }}"
-                       href="{{ path('app_feature_new', {id: project.id}) }}">
-                        Create feature
-                    </a>
+                    {# Feature list (from inverse side) #}
+                    {% set features = project.features|default([]) %}
 
-                    {# If later you create a dedicated feature list route, swap this link.
-                   For now project home already lists them, so keep it simple. #}
-                    <a class="list-group-item list-group-item-action {{ active_menu == 'feature_list' ? 'active' : '' }}"
-                       href="{{ path('app_project_show', {id: project.id}) }}#features">
-                        List features
-                    </a>
+                    {% if features is empty %}
+                        <div class="list-group-item text-secondary small">
+                            No features yet.
+                        </div>
+                    {% else %}
+                        {% for feature in features %}
+                            {# hide deleted features if you keep soft-delete #}
+                            {% if feature.deletedAt is not null %}
+                            {% else %}
+                                <a class="list-group-item list-group-item-action py-2
+                          {{ active_feature_id == feature.id ? 'active' : '' }}"
+                                   href="{{ path('app_feature_show', {projectId: project.id, featureId: feature.id}) }}">
+                                    <div class="small fw-semibold text-break">{{ feature.name }}</div>
+                                    {#                                    <div class="small text-secondary text-break"> #}
+                                    {#                                        #{{ feature.id }} #}
+                                    {#                                    </div> #}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
 
                     <div class="list-group-item">
                         <a class="link-secondary text-decoration-none" href="{{ path('app_home') }}">
@@ -56,6 +79,7 @@
                         </a>
                     </div>
                 </div>
+
             </div>
         </aside>
 
