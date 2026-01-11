@@ -15,6 +15,7 @@ final class HomeController extends AbstractController
     {
         return [
             'projects' => $projects->findAllActive(),
+            'deleted_projects_count' => $projects->countAllDeleted(),
         ];
     }
 }

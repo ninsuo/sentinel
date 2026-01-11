@@ -1,5 +1,9 @@
 {% extends 'project/_layout.html.twig' %}
 
+{% set breadcrumb_items = [
+    { label: 'Configuration' }
+] %}
+
 {% block title %}Edit {{ project.name }} · Sentinel{% endblock %}
 
 {% block project_content %}

@@ -82,11 +82,6 @@ class Project
         $this->deletedAt = null;
     }
 
-    public function isDeleted() : bool
-    {
-        return null !== $this->deletedAt;
-    }
-
     public function getId() : ?int
     {
         return $this->id;
@@ -149,5 +144,20 @@ class Project
     public function getFeatures() : Collection
     {
         return $this->features;
+    }
+
+    public function getActiveFeatures() : Collection
+    {
+        return $this->features->filter(fn(Feature $feature) => !$feature->isDeleted());
+    }
+
+    public function isDeleted() : bool
+    {
+        return null !== $this->deletedAt;
+    }
+
+    public function getDeletedFeatures() : Collection
+    {
+        return $this->features->filter(fn(Feature $feature) => $feature->isDeleted());
     }
 }

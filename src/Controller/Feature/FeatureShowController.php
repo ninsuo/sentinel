@@ -31,7 +31,6 @@ final class FeatureShowController extends AbstractController
             'project' => $project,
             'feature' => $feature,
             'runs' => $runs->findLatestRunsForFeature($feature),
-            'active_menu' => 'feature',
             'active_feature_id' => $feature->getId(),
         ];
     }

@@ -10,7 +10,18 @@
         </p>
 
         <a class="btn btn-primary" href="{{ path('app_project_new') }}">New project</a>
-        <a class="btn btn-outline-secondary" href="{{ path('app_project_trash') }}">Trash</a>
+
+        <a class="btn btn-outline-secondary position-relative"
+           href="{{ path('app_project_trash') }}">
+            Trash
+
+            {% if deleted_projects_count > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">
+                    {{ deleted_projects_count }}
+                    <span class="visually-hidden">deleted projects</span>
+                </span>
+            {% endif %}
+        </a>
     </div>
 
     <div class="card shadow-sm">

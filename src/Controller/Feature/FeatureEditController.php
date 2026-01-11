@@ -4,7 +4,7 @@ namespace App\Controller\Feature;
 
 use App\Entity\Feature;
 use App\Entity\Project;
-use App\Form\FeaturePromptType;
+use App\Form\FeatureType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Attribute\Template;
@@ -13,13 +13,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class FeaturePromptController extends AbstractController
+final class FeatureEditController extends AbstractController
 {
-    #[Route('/project/{projectId<\d+>}/feature/{featureId<\d+>}/prompt', name: 'app_feature_prompt', methods: [
+    #[Route('/project/{projectId<\d+>}/feature/{featureId<\d+>}/prompt', name: 'app_feature_edit', methods: [
         'GET',
         'POST',
     ])]
-    #[Template('feature/prompt.html.twig')]
+    #[Template('feature/edit.html.twig')]
     public function __invoke(
         #[MapEntity(expr: 'repository.find(projectId)')] Project $project,
         #[MapEntity(expr: 'repository.find(featureId)')] Feature $feature,
@@ -34,7 +34,7 @@ final class FeaturePromptController extends AbstractController
             throw $this->createNotFoundException('Not found.');
         }
 
-        $form = $this->createForm(FeaturePromptType::class, $feature);
+        $form = $this->createForm(FeatureType::class, $feature);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -48,7 +48,6 @@ final class FeaturePromptController extends AbstractController
         }
 
         return [
-            'active_menu' => 'feature_prompt',
             'active_feature_id' => $feature->getId(),
             'project' => $project,
             'feature' => $feature,

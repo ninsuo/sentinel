@@ -26,7 +26,6 @@ final class ProjectShowController extends AbstractController
         return [
             'project' => $project,
             'features' => $features,
-            'active_menu' => 'project_home',
         ];
     }
 }

@@ -26,7 +26,6 @@ final class FeatureTrashController extends AbstractController
         }
 
         return [
-            'active_menu' => 'feature_trash',
             'active_feature_id' => null,
             'project' => $project,
             'features' => $features->findDeletedByProject($project),

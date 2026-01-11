@@ -40,7 +40,6 @@ final class ProjectEditController extends AbstractController
         return [
             'project' => $project,
             'form' => $form->createView(),
-            'active_menu' => 'project_config',
         ];
     }
 }

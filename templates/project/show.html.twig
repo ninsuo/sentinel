@@ -6,9 +6,23 @@
         <div class="text-secondary small text-break mb-3">{{ project.path }}</div>
 
         <div class="d-flex gap-2">
-            <a class="btn btn-outline-secondary" href="{{ path('app_project_edit', {id: project.id}) }}">Edit
-                configuration</a>
-            <a class="btn btn-primary" href="{{ path('app_feature_new', {id: project.id}) }}">Create feature</a>
+            <a class="btn btn-outline-secondary" href="{{ path('app_project_edit', {id: project.id}) }}">
+                Edit configuration
+            </a>
+            <a class="btn btn-primary" href="{{ path('app_feature_new', {id: project.id}) }}">
+                Create feature
+            </a>
+
+            <a class="btn btn-outline-secondary position-relative"
+               href="{{ path('app_feature_trash', {projectId: project.id}) }}">
+                Trash
+                {% set trashedCount = project.deletedFeatures|length %}
+                {% if trashedCount > 0 %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">
+                        {{ trashedCount }}
+                    </span>
+                {% endif %}
+            </a>
         </div>
     </div>
 

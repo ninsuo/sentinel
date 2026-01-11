@@ -36,4 +36,13 @@ final class ProjectRepository extends ServiceEntityRepository
                     ->getQuery()
                     ->getResult();
     }
+
+    public function countAllDeleted() : int
+    {
+        return (int) $this->createQueryBuilder('p')
+                          ->select('COUNT(p.id)')
+                          ->andWhere('p.deletedAt IS NOT NULL')
+                          ->getQuery()
+                          ->getSingleScalarResult();
+    }
 }

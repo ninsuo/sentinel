@@ -47,7 +47,6 @@ final class FeatureCreateController extends AbstractController
         return [
             'project' => $project,
             'form' => $form->createView(),
-            'active_menu' => 'feature_new',
         ];
     }
 }

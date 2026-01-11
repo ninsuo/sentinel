@@ -2,7 +2,7 @@
 
 {% set breadcrumb_items = [
     { label: 'Feature: ' ~ feature.name, url: path('app_feature_show', {projectId: project.id, featureId: feature.id}) },
-    { label: 'Run #' ~ run.id },
+    { label: 'Run #' ~ run.id, url: path('app_feature_run_select_files', {projectId: project.id, featureId: feature.id, runId: run.id}) },
     { label: 'Prompt review' }
 ] %}
 
@@ -31,7 +31,7 @@
 
                     <div class="mt-2">
                         <a class="btn btn-sm btn-outline-secondary"
-                           href="{{ path('app_feature_prompt', {projectId: project.id, featureId: feature.id}) }}">
+                           href="{{ path('app_feature_edit', {projectId: project.id, featureId: feature.id}) }}">
                             Edit feature prompt
                         </a>
                     </div>
@@ -43,11 +43,8 @@
 
                     <div class="d-flex gap-2">
                         <button class="btn btn-primary">Continue to file selection</button>
-                        <a class="btn btn-outline-secondary"
-                           href="{{ path('app_feature_run_select_files', {projectId: project.id, featureId: feature.id, runId: run.id}) }}">
-                            Skip
-                        </a>
                     </div>
+
                     {{ form_end(form) }}
                 </div>
             </div>
