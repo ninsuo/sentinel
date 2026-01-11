@@ -2,7 +2,7 @@
 
 {% set breadcrumb_items = [
     { label: 'Feature: ' ~ feature.name, url: path('app_feature_show', {projectId: project.id, featureId: feature.id}) },
-    { label: 'Run #' ~ run.id },
+    { label: 'Run #' ~ run.id, url: path('app_feature_run_generate', {projectId: project.id, featureId: feature.id, runId: run.id}) },
     { label: 'Review patch' }
 ] %}
 
@@ -10,13 +10,6 @@
     <div class="card shadow-sm mb-3">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
             <div class="fw-semibold">Review patch</div>
-
-            <div class="d-flex gap-2">
-                <a class="btn btn-sm btn-outline-secondary"
-                   href="{{ path('app_feature_run_generate', {projectId: project.id, featureId: feature.id, runId: run.id}) }}">
-                    Back to generate
-                </a>
-            </div>
         </div>
 
         <div class="card-body">
@@ -24,68 +17,77 @@
                 <div class="alert alert-warning mb-0">
                     No patch to review. The AI probably returned something unusable.
                 </div>
+            {% elseif file_patches is empty %}
+                <div class="alert alert-warning mb-0">
+                    Could not parse patch into file changes.
+                </div>
             {% else %}
-                <form method="post" action="{{ path('app_feature_run_review_submit', {projectId: project.id, featureId: feature.id, runId: run.id}) }}">
+                {# FORM 1: save review edits (rename new file destinations) #}
+                <form method="post"
+                      action="{{ path('app_feature_run_review_submit', {projectId: project.id, featureId: feature.id, runId: run.id}) }}"
+                      class="mb-0">
                     <input type="hidden" name="_token" value="{{ csrf_token('review_run_' ~ run.id) }}">
 
                     <div class="mb-3">
                         <span class="badge text-bg-light border">Status: {{ run.status ?? '-' }}</span>
                     </div>
 
-                    {% if file_patches is empty %}
-                        <div class="alert alert-warning">
-                            Could not parse patch into file changes.
-                        </div>
-                    {% else %}
-                        {% for fp in file_patches %}
-                            <div class="border rounded p-3 mb-3 bg-white">
-                                <div class="d-flex justify-content-between align-items-start gap-3">
-                                    <div>
-                                        <div class="fw-semibold">
-                                            {% if fp.isNewFile %}
-                                                New file
-                                            {% elseif fp.isDeletedFile %}
-                                                Deleted file
-                                            {% else %}
-                                                Updated file
-                                            {% endif %}
-                                        </div>
-                                        <div class="small text-secondary text-break">
-                                            {{ fp.oldPath }} → {{ fp.newPath }}
-                                        </div>
+                    {% for fp in file_patches %}
+                        <div class="border rounded p-3 mb-3 bg-white">
+                            <div class="d-flex justify-content-between align-items-start gap-3">
+                                <div>
+                                    <div class="fw-semibold">
+                                        {% if fp.isNewFile %}
+                                            New file
+                                        {% elseif fp.isDeletedFile %}
+                                            Deleted file
+                                        {% else %}
+                                            Updated file
+                                        {% endif %}
                                     </div>
-
-                                    {% if fp.isNewFile %}
-                                        <div style="min-width: 360px;">
-                                            <label class="form-label small text-secondary mb-1">Destination path (for
-                                                new files only)</label>
-                                            <input class="form-control form-control-sm"
-                                                   name="rename_new[{{ fp.key }}]"
-                                                   value="{{ fp.newPath }}"
-                                                   placeholder="e.g. tests/Controller/HomeControllerTest.php">
-                                        </div>
-                                    {% endif %}
+                                    <div class="small text-secondary text-break">
+                                        {{ fp.oldPath }} → {{ fp.newPath }}
+                                    </div>
                                 </div>
 
-                                <hr class="my-3">
-
-                                <pre class="mb-0 small bg-body-tertiary p-2 rounded"
-                                     style="white-space: pre; overflow:auto; max-height: 360px;">{{ fp.diff }}</pre>
+                                {% if fp.isNewFile %}
+                                    <div style="min-width: 360px;">
+                                        <label class="form-label small text-secondary mb-1">
+                                            Destination path (for new files only)
+                                        </label>
+                                        <input class="form-control form-control-sm"
+                                               name="rename_new[{{ fp.key }}]"
+                                               value="{{ fp.newPath }}"
+                                               placeholder="e.g. tests/Controller/HomeControllerTest.php">
+                                    </div>
+                                {% endif %}
                             </div>
-                        {% endfor %}
 
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-primary">Save review edits</button>
+                            <hr class="my-3">
 
-                            <form method="post"
-                                  action="{{ path('app_feature_run_apply', {projectId: project.id, featureId: feature.id, runId: run.id}) }}"
-                                  class="d-inline"
-                                  onsubmit="return confirm('Apply this patch to the filesystem?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('apply_run_' ~ run.id) }}">
-                                <button class="btn btn-success">Apply patch</button>
-                            </form>
+                            <pre class="mb-0 small bg-body-tertiary p-2 rounded"
+                                 style="white-space: pre; overflow:auto; max-height: 360px;">{{ fp.diff }}</pre>
                         </div>
-                    {% endif %}
+                    {% endfor %}
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" type="submit">Save review edits</button>
+
+                        {# Apply button is NOT inside this form #}
+                        <button class="btn btn-success" type="button"
+                                onclick="document.getElementById('apply-form').requestSubmit();">
+                            Apply patch
+                        </button>
+                    </div>
+                </form>
+
+                {# FORM 2: apply patch (separate, outside) #}
+                <form id="apply-form"
+                      method="post"
+                      action="{{ path('app_feature_run_apply', {projectId: project.id, featureId: feature.id, runId: run.id}) }}"
+                      onsubmit="return confirm('Apply this patch to the filesystem?');"
+                      class="d-none">
+                    <input type="hidden" name="_token" value="{{ csrf_token('apply_run_' ~ run.id) }}">
                 </form>
             {% endif %}
         </div>

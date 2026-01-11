@@ -156,7 +156,7 @@ final class FeatureRunGenerateSubmitController extends AbstractController
 
         $this->addFlash('success', 'AI response generated. Next step: patch preview / apply.');
 
-        return $this->redirectToRoute('app_feature_run_generate', [
+        return $this->redirectToRoute('app_feature_run_review', [
             'projectId' => $project->getId(),
             'featureId' => $feature->getId(),
             'runId' => $run->getId(),

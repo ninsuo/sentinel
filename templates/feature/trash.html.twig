@@ -1,13 +1,12 @@
 {% extends 'project/_layout.html.twig' %}
 
 {% set breadcrumb_items = [
-    { label: 'Feature trash' }
+    { label: 'Trash' }
 ] %}
 
 {% block project_content %}
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="h4 fw-semibold mb-0">Feature trash</h1>
-        <a class="btn btn-outline-secondary" href="{{ path('app_project_show', {id: project.id}) }}">Back</a>
     </div>
 
     <div class="card shadow-sm">

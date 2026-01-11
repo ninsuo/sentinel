@@ -2,8 +2,8 @@
 
 {% set breadcrumb_items = [
     { label: 'Feature: ' ~ feature.name, url: path('app_feature_show', {projectId: project.id, featureId: feature.id}) },
-    { label: 'Run #' ~ run.id, url: path('app_feature_run_select_files', {projectId: project.id, featureId: feature.id, runId: run.id}) },
-    { label: 'Prompt review' }
+    { label: 'Run #' ~ run.id, url: path('app_feature_run_generate', {projectId: project.id, featureId: feature.id, runId: run.id}) },
+    { label: 'Prompt' }
 ] %}
 
 {% block project_content %}
