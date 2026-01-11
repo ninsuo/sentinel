@@ -23,7 +23,7 @@ class FeatureRun
 
     // The prompt actually used for the run (feature prompt + maybe extra user input later)
     #[ORM\Column(type: Types::TEXT)]
-    private string $userPrompt;
+    private string $prompt;
 
     // Selected files metadata for the run (paths, hashes, maybe excerpts later)
     // JSON is nice, but TEXT keeps it dead-simple and portable.
@@ -44,16 +44,13 @@ class FeatureRun
     #[ORM\Column(type: Types::STRING, length: 40, nullable: true)]
     private ?string $status = null; // e.g. created, generated, applied, rejected, failed
 
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $durationMs = null;
-
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(Feature $feature, string $userPrompt)
+    public function __construct(Feature $feature, string $prompt)
     {
         $this->feature = $feature;
-        $this->userPrompt = $userPrompt;
+        $this->prompt = $prompt;
         $this->createdAt = new \DateTimeImmutable();
         $this->status = 'created';
     }
@@ -68,14 +65,14 @@ class FeatureRun
         return $this->feature;
     }
 
-    public function getUserPrompt() : string
+    public function getPrompt() : string
     {
-        return $this->userPrompt;
+        return $this->prompt;
     }
 
-    public function setUserPrompt(string $userPrompt) : self
+    public function setPrompt(string $prompt) : self
     {
-        $this->userPrompt = $userPrompt;
+        $this->prompt = $prompt;
 
         return $this;
     }
@@ -140,23 +137,6 @@ class FeatureRun
         return $this;
     }
 
-    public function getDurationMs() : ?int
-    {
-        return $this->durationMs;
-    }
-
-    public function setDurationMs(?int $durationMs) : self
-    {
-        $this->durationMs = $durationMs;
-
-        return $this;
-    }
-
-    public function getCreatedAt() : \DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
     public function files() : array
     {
         if ($this->selectedFilesJson === null) {
@@ -164,5 +144,10 @@ class FeatureRun
         }
 
         return json_decode($this->selectedFilesJson, true);
+    }
+
+    public function getCreatedAt() : \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 }

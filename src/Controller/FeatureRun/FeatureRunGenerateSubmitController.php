@@ -111,7 +111,7 @@ final class FeatureRunGenerateSubmitController extends AbstractController
         $context = [
             'project_prompt' => $project->getPrompt() ?? '',
             'feature_prompt' => $feature->getPrompt(),
-            'run_prompt' => $run->getUserPrompt(),
+            'run_prompt' => $run->getPrompt(),
             'files' => $files,
         ];
 

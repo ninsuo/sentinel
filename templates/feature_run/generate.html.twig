@@ -68,10 +68,10 @@
                     </a>
                 </div>
 
-                {% if run.userPrompt != feature.prompt %}
+                {% if run.prompt != feature.prompt %}
                     <div class="card-body">
                         <pre class="mb-0 small text-break overflow-auto border rounded p-2 bg-light"
-                             style="white-space: pre-wrap; max-height: 150px;">{{ run.userPrompt }}</pre>
+                             style="white-space: pre-wrap; max-height: 150px;">{{ run.prompt }}</pre>
                     </div>
                 {% else %}
                     <div class="card-body text-secondary small">

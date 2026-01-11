@@ -13,7 +13,7 @@ final class FeatureRunPromptType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
-        $builder->add('userPrompt', TextareaType::class, [
+        $builder->add('prompt', TextareaType::class, [
             'label' => 'Run prompt',
             'help' => 'Adjust the prompt for this run (iteration, fixes, new constraints, etc.).',
             'attr' => [

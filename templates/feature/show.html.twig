@@ -41,8 +41,8 @@
                 <tr>
                     <th>ID</th>
                     <th>Created</th>
+                    <td>Prompt</td>
                     <th>Status</th>
-                    <th>Duration</th>
                     <th class="text-end">Actions</th>
                 </tr>
                 </thead>
@@ -51,8 +51,16 @@
                     <tr>
                         <td class="fw-semibold">#{{ run.id }}</td>
                         <td class="text-secondary small">{{ run.createdAt|date('Y-m-d H:i') }}</td>
+                        <td>
+                            <div class="small text-muted text-break" style="max-width: 600px; display: -webkit-box;-webkit-line-clamp: 3;  -webkit-box-orient: vertical; overflow: hidden;">
+                                {% if run.prompt == feature.prompt %}
+                                    <em class="text-secondary">(Default feature prompt)</em>
+                                {% else %}
+                                    {{ run.prompt }}
+                                {% endif %}
+                            </div>
+                        </td>
                         <td><span class="badge text-bg-light border">{{ run.status ?? '-' }}</span></td>
-                        <td class="text-secondary small">{{ run.durationMs ? (run.durationMs ~ ' ms') : '-' }}</td>
                         <td class="text-end">
                             <a class="btn btn-sm btn-outline-primary"
                                href="{{ path('app_feature_run_generate', {projectId: project.id, featureId: feature.id, runId: run.id}) }}">
