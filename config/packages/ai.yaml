@@ -1,0 +1,16 @@
+ai:
+    platform:
+        openai:
+            api_key: '%env(OPENAI_API_KEY)%'
+        gemini:
+            api_key: '%env(GEMINI_API_KEY)%'
+
+    agent:
+        openai:
+            model: 'gpt-4o-mini'
+            platform: ai.platform.openai
+        gemini:
+            model: 'gemini-2.5-pro'
+            platform: ai.platform.gemini
+
+    store:
