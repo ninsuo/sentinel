@@ -52,7 +52,8 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <pre class="mb-0 small" style="white-space: pre-wrap;">{{ feature.prompt }}</pre>
+                    <pre class="mb-0 small text-break overflow-auto border rounded p-2 bg-light"
+                         style="white-space: pre-wrap; max-height: 150px;">{{ feature.prompt }}</pre>
                 </div>
             </div>
         </div>
@@ -69,7 +70,8 @@
 
                 {% if run.userPrompt != feature.prompt %}
                     <div class="card-body">
-                        <pre class="mb-0 small" style="white-space: pre-wrap;">{{ run.userPrompt }}</pre>
+                        <pre class="mb-0 small text-break overflow-auto border rounded p-2 bg-light"
+                             style="white-space: pre-wrap; max-height: 150px;">{{ run.userPrompt }}</pre>
                     </div>
                 {% else %}
                     <div class="card-body text-secondary small">

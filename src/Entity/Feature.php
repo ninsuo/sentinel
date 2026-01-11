@@ -41,7 +41,7 @@ class Feature
     /**
      * @var list<FeatureRun>
      */
-    #[ORM\OneToMany(mappedBy: 'feature', targetEntity: FeatureRun::class, orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: FeatureRun::class, mappedBy: 'feature', orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private iterable $runs;
 
@@ -132,5 +132,10 @@ class Feature
     public function getDeletedAt() : ?\DateTimeImmutable
     {
         return $this->deletedAt;
+    }
+
+    public function getRuns() : iterable
+    {
+        return $this->runs;
     }
 }
