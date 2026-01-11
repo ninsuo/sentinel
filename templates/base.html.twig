@@ -35,7 +35,22 @@
             </ul>
 
             <div class="d-flex gap-2">
-                <span class="badge text-bg-light border">With ❤️ by ninsuo</span>
+                <div class="d-flex gap-2 align-items-center">
+                    <form method="post" action="{{ path('app_settings_default_provider') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('default_provider') }}">
+
+                        <select name="provider"
+                                class="form-select form-select-sm"
+                                onchange="this.form.submit()"
+                                title="Default AI provider">
+                            {% for p in available_providers %}
+                                <option value="{{ p.value }}" {% if default_provider.value == p.value %}selected{% endif %}>
+                                    {{ p.label() }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
             </div>
         </div>
     </nav>
