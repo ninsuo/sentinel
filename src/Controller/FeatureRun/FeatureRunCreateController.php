@@ -5,6 +5,7 @@ namespace App\Controller\FeatureRun;
 use App\Entity\Feature;
 use App\Entity\FeatureRun;
 use App\Entity\Project;
+use App\Repository\FeatureRunRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,20 +21,23 @@ final class FeatureRunCreateController extends AbstractController
         #[MapEntity(expr: 'repository.find(featureId)')] Feature $feature,
         Request $request,
         EntityManagerInterface $em,
+        FeatureRunRepository $runs
     ) : Response {
-        if ($feature->getProject()->getId() !== $project->getId()) {
-            throw $this->createNotFoundException('Feature does not belong to project.');
-        }
-
-        if (!$this->isCsrfTokenValid('run_feature_'.$feature->getId(), (string) $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException('Invalid CSRF token.');
-        }
+        $existingRuns = $runs->count(['feature' => $feature]);
 
         $run = new FeatureRun($feature, $feature->getPrompt());
         $run->setStatus('created');
 
         $em->persist($run);
         $em->flush();
+
+        if ($existingRuns >= 1) {
+            return $this->redirectToRoute('app_feature_run_prompt', [
+                'projectId' => $project->getId(),
+                'featureId' => $feature->getId(),
+                'runId' => $run->getId(),
+            ]);
+        }
 
         return $this->redirectToRoute('app_feature_run_select_files', [
             'projectId' => $project->getId(),

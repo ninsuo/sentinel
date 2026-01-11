@@ -53,15 +53,6 @@
                                 </a>
 
                                 <form method="post"
-                                      action="{{ path('app_feature_continue', {projectId: project.id, featureId: feature.id}) }}"
-                                      class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('continue_feature_' ~ feature.id) }}">
-                                    <button class="btn btn-sm btn-primary">
-                                        Continue{% if latestRun %} (run #{{ latestRun.id }}){% endif %}
-                                    </button>
-                                </form>
-
-                                <form method="post"
                                       action="{{ path('app_feature_delete', {projectId: project.id, featureId: feature.id}) }}"
                                       class="d-inline"
                                       onsubmit="return confirm('Delete this feature?');">

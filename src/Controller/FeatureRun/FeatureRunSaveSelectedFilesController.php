@@ -79,9 +79,10 @@ final class FeatureRunSaveSelectedFilesController extends AbstractController
 
         $this->addFlash('success', sprintf('%d files selected.', count($selected)));
 
-        return $this->redirectToRoute('app_feature_show', [
+        return $this->redirectToRoute('app_feature_run_generate', [
             'projectId' => $project->getId(),
             'featureId' => $feature->getId(),
+            'runId' => $run->getId(),
         ]);
     }
 }

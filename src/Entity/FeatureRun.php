@@ -156,4 +156,13 @@ class FeatureRun
     {
         return $this->createdAt;
     }
+
+    public function files() : array
+    {
+        if ($this->selectedFilesJson === null) {
+            return [];
+        }
+
+        return json_decode($this->selectedFilesJson, true);
+    }
 }

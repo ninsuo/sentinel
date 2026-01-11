@@ -1,0 +1,38 @@
+{% extends 'project/_layout.html.twig' %}
+
+{% set breadcrumb_items = [
+    { label: 'Feature: ' ~ feature.name, url: path('app_feature_show', {projectId: project.id, featureId: feature.id}) },
+    { label: 'Prompt' }
+] %}
+
+{% block project_content %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <div class="fw-semibold">Feature prompt</div>
+
+            <a class="btn btn-sm btn-outline-secondary"
+               href="{{ path('app_feature_show', {projectId: project.id, featureId: feature.id}) }}">
+                Back
+            </a>
+        </div>
+
+        <div class="card-body">
+            <div class="mb-3">
+                <div class="text-secondary small">Feature</div>
+                <div class="h5 mb-0">{{ feature.name }}</div>
+            </div>
+
+            {{ form_start(form) }}
+            {{ form_row(form.prompt) }}
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary">Save</button>
+                <a class="btn btn-outline-secondary"
+                   href="{{ path('app_feature_show', {projectId: project.id, featureId: feature.id}) }}">
+                    Cancel
+                </a>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
