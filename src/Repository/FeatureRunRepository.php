@@ -14,9 +14,6 @@ final class FeatureRunRepository extends ServiceEntityRepository
         parent::__construct($registry, FeatureRun::class);
     }
 
-    /**
-     * @return FeatureRun[]
-     */
     public function findLatestRunsForFeature(Feature $feature, int $limit = 20) : array
     {
         return $this->createQueryBuilder('r')
@@ -27,4 +24,42 @@ final class FeatureRunRepository extends ServiceEntityRepository
                     ->getQuery()
                     ->getResult();
     }
+
+    public function findLatestRunForFeature(Feature $feature) : ?FeatureRun
+    {
+        return $this->findOneBy(['feature' => $feature], ['createdAt' => 'DESC']);
+    }
+
+    /**
+     * @param list<Feature> $features
+     *
+     * @return array<int, FeatureRun> map featureId => latest FeatureRun
+     */
+    public function findLatestRunsForFeatures(array $features) : array
+    {
+        if ($features === []) {
+            return [];
+        }
+
+        // Using MAX(id) is fine for "latest" as long as ids are monotonic.
+        // If you want strictness, use MAX(createdAt) + join, but this is good enough for now.
+        $sub = $this->createQueryBuilder('r2')
+                    ->select('MAX(r2.id)')
+                    ->andWhere('r2.feature IN (:features)')
+                    ->groupBy('r2.feature');
+
+        $runs = $this->createQueryBuilder('r')
+                     ->andWhere('r.id IN ('.$sub->getDQL().')')
+                     ->setParameter('features', $features)
+                     ->getQuery()
+                     ->getResult();
+
+        $map = [];
+        foreach ($runs as $run) {
+            $map[$run->getFeature()->getId()] = $run;
+        }
+
+        return $map;
+    }
+
 }

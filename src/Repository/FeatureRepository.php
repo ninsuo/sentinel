@@ -27,4 +27,18 @@ final class FeatureRepository extends ServiceEntityRepository
                     ->getQuery()
                     ->getResult();
     }
+
+    /**
+     * @return Feature[]
+     */
+    public function findDeletedByProject(Project $project) : array
+    {
+        return $this->createQueryBuilder('f')
+                    ->andWhere('f.project = :project')
+                    ->andWhere('f.deletedAt IS NOT NULL')
+                    ->setParameter('project', $project)
+                    ->orderBy('f.deletedAt', 'DESC')
+                    ->getQuery()
+                    ->getResult();
+    }
 }

@@ -15,15 +15,17 @@ final class ProjectShowController extends AbstractController
     #[Template('project/show.html.twig')]
     public function __invoke(
         #[MapEntity] Project $project,
-        FeatureRepository $features) : array
+        FeatureRepository $featuresRepo) : array
     {
         if ($project->isDeleted()) {
             throw $this->createNotFoundException('Project is deleted.');
         }
 
+        $features = $featuresRepo->findByProjectActive($project);
+
         return [
             'project' => $project,
-            'features' => $features->findByProjectActive($project),
+            'features' => $features,
             'active_menu' => 'project_home',
         ];
     }

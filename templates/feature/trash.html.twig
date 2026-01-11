@@ -1,0 +1,60 @@
+{% extends 'project/_layout.html.twig' %}
+
+{% set breadcrumb_items = [
+    { label: 'Feature trash' }
+] %}
+
+{% block project_content %}
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h4 fw-semibold mb-0">Feature trash</h1>
+        <a class="btn btn-outline-secondary" href="{{ path('app_project_show', {id: project.id}) }}">Back</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white fw-semibold">Deleted features</div>
+
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Deleted</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if features is empty %}
+                    <tr>
+                        <td colspan="3" class="text-secondary text-center py-5">
+                            Empty trash. Shocking restraint.
+                        </td>
+                    </tr>
+                {% else %}
+                    {% for feature in features %}
+                        <tr>
+                            <td class="fw-semibold text-break">{{ feature.name }}</td>
+                            <td class="text-secondary small">{{ feature.deletedAt ? feature.deletedAt|date('Y-m-d H:i') : '-' }}</td>
+                            <td class="text-end">
+                                <form method="post"
+                                      action="{{ path('app_feature_restore', {projectId: project.id, featureId: feature.id}) }}"
+                                      class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('restore_feature_' ~ feature.id) }}">
+                                    <button class="btn btn-sm btn-outline-primary">Restore</button>
+                                </form>
+
+                                <form method="post"
+                                      action="{{ path('app_feature_purge', {projectId: project.id, featureId: feature.id}) }}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Permanently delete this feature?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('purge_feature_' ~ feature.id) }}">
+                                    <button class="btn btn-sm btn-outline-danger">Delete forever</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

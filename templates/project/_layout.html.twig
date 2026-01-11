@@ -43,6 +43,12 @@
 
                     <div class="list-group-item d-flex justify-content-between align-items-center">
                         <span class="text-uppercase small text-secondary fw-semibold mb-0">Features</span>
+
+                        <a class="btn btn-sm btn-outline-secondary"
+                           href="{{ path('app_feature_trash', {projectId: project.id}) }}">
+                            🗑
+                        </a>
+
                         <a class="btn btn-sm btn-outline-primary"
                            href="{{ path('app_feature_new', {id: project.id}) }}">
                             +
@@ -50,14 +56,14 @@
                     </div>
 
                     {# Feature list (from inverse side) #}
-                    {% set features = project.features|default([]) %}
+                    {% set menu_features = project.features|default([]) %}
 
-                    {% if features is empty %}
+                    {% if menu_features is empty %}
                         <div class="list-group-item text-secondary small">
                             No features yet.
                         </div>
                     {% else %}
-                        {% for feature in features %}
+                        {% for feature in menu_features %}
                             {# hide deleted features if you keep soft-delete #}
                             {% if feature.deletedAt is not null %}
                             {% else %}
