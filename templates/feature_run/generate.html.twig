@@ -46,6 +46,13 @@
                            href="{{ path('app_feature_run_prompt', {projectId: project.id, featureId: feature.id, runId: run.id}) }}">
                             Edit run prompt
                         </a>
+
+                        {% if run.patchText %}
+                            <a class="btn btn-primary"
+                               href="{{ path('app_feature_run_review', {projectId: project.id, featureId: feature.id, runId: run.id}) }}">
+                                Review patch
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
 

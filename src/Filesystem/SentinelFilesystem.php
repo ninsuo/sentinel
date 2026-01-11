@@ -112,7 +112,7 @@ final readonly class SentinelFilesystem
         return implode('/', $segments);
     }
 
-    private function assertAllowedRelativePath(string $relativePath) : void
+    public function assertAllowedRelativePath(string $relativePath) : void
     {
         $relativePath = $this->normalizeRelativePath($relativePath);
         $normalized = $relativePath === '' ? '.' : $relativePath;

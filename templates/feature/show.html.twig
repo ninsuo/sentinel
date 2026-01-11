@@ -45,14 +45,9 @@
                         <td><span class="badge text-bg-light border">{{ run.status ?? '-' }}</span></td>
                         <td class="text-secondary small">{{ run.durationMs ? (run.durationMs ~ ' ms') : '-' }}</td>
                         <td class="text-end">
-                            <a class="btn btn-sm btn-outline-secondary"
-                               href="{{ path('app_feature_prompt', {projectId: project.id, featureId: feature.id}) }}">
-                                Prompt
-                            </a>
-
-                            <a class="btn btn-sm btn-outline-secondary"
-                               href="{{ path('app_feature_run_select_files', {projectId: project.id, featureId: feature.id, runId: run.id}) }}">
-                                Files ({{ run.files|length }})
+                            <a class="btn btn-sm btn-outline-info"
+                               href="{{ path('app_feature_run_generate', {projectId: project.id, featureId: feature.id, runId: run.id}) }}">
+                                Review
                             </a>
 
                             <form method="post"

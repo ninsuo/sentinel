@@ -14,4 +14,12 @@ enum AiProvider: string
             self::GEMINI => 'Gemini',
         };
     }
+
+    public function getTokens() : int
+    {
+        return match ($this) {
+            self::OPENAI => 32000,
+            self::GEMINI => 65536,
+        };
+    }
 }

@@ -1,0 +1,27 @@
+Project instructions (must follow):
+{{ project_prompt|default('') }}
+
+Feature goal:
+{{ feature_prompt }}
+
+{% if feature_prompt != run_prompt %}
+    Run goal (iteration / refinement):
+    {{ run_prompt }}
+{% endif %}
+
+Selected files (the only code you can see):
+{% for f in files %}
+    - {{ f.path }} (sha256={{ f.sha256 }}, size={{ f.size }} bytes{% if f.truncated %}, truncated{% endif %})
+{% endfor %}
+
+File contents:
+{% for f in files %}
+
+    ===== FILE: {{ f.path }} =====
+    {{ f.content }}
+    ===== END FILE: {{ f.path }} =====
+
+{% endfor %}
+
+Request:
+Implement the run goal in this existing project. Produce a unified diff patch only.

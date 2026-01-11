@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 readonly class AiClient
 {
     public function __construct(
-        #[AutowireLocator(AgentInterface::class)]
+        #[AutowireLocator('ai.agent')]
         private ServiceLocator $agentsLocator,
         private SettingRepository $settingRepository,
     ) {
@@ -27,10 +27,14 @@ readonly class AiClient
             Message::ofUser($userPrompt),
         );
 
-        /** @var AgentInterface $agent */
-        $agent = $this->agentsLocator->get($this->getProvider()->value);
+        $provider = $this->getProvider();
 
-        return $agent->call($messages);
+        /** @var AgentInterface $agent */
+        $agent = $this->agentsLocator->get('ai.agent.'.$provider->value);
+
+        return $agent->call($messages, [
+            'max_output_tokens' => $provider->getTokens(),
+        ]);
     }
 
     private function getProvider() : AiProvider
